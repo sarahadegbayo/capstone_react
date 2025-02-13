@@ -4,7 +4,34 @@
     margin: 0 auto; /* Center the container horizontally */
     padding: 40px; /* Padding inside the container */
     margin-top: 10%; /* Top margin of 10% */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
+
+.login-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .login-text {
+    margin-bottom: 20px;
+  }
+  
+  .login-text h2 {
+    font-size: 28px;
+  }
+  
+  .login-text1 {
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+  
+  .login-form {
+    width: 100%;
+  }
 
 /* Styles for form groups */
 .form-group {
@@ -20,7 +47,7 @@
 
 /* Styles for form controls */
 .form-control {
-    width: 40%; /* Width of form controls */
+    width: 100%; /* Width of form controls */
     padding: 8px; /* Padding inside form controls */
     font-size: 16px; /* Font size of form controls */
     border: 1px solid #ccc; /* Border around form controls */
@@ -31,6 +58,8 @@
 .btn-group {
     margin-top: .0001px; /* Top margin for spacing above button groups */
     margin-bottom: 20px; /* Bottom margin for spacing below button groups */
+    display: flex;
+   justify-content: space-between;
 }
 
 /* Styles for buttons */
