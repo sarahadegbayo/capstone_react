@@ -10,6 +10,7 @@ import Navbar from './Components/Navbar/Navbar';
 import LandingPage from './Components/Landing_Page/LandingPage';
 import Sign_Up from './Components/Sign_Up/Sign_Up.js'; // Ensure this path is correct
 import Login from './Components/Login/Login.js'; // Ensure this path is correct
+import InstantConsultation from 'InstantConsultationBooking/InstantConsultation.js'
 // import Appointments from './Components/Appointments/Appointments'; // Uncomment if needed
 
 // Function component for the main App
@@ -27,6 +28,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/sign_up" element={<Sign_Up />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/instant-consultation" element={<InstantConsultation />} />
           {/* <Route path="/appointments" element={<Appointments />} /> */}
 
           {/* Handle undefined routes (404 Not Found) */}
