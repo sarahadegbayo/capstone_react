@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import './Sign_Up.css';
+import './SignUp.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../config';
 
 // Function component for Sign Up form
-const Sign_Up = () => {
+const SignUp = () => {
     // State variables using useState hook
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -34,40 +34,49 @@ const Sign_Up = () => {
             return;
         }
 
-        // API Call to register user
-        const response = await fetch(`${API_URL}/api/auth/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                password: password,
-                phone: phone,
-            }),
-        });
+        try {
+            // API Call to register user
+            const response = await fetch(`${API_URL}/api/auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password,
+                    phone: phone,
+                }),
+            });
 
-        const json = await response.json(); // Parse the response JSON
-
-        if (json.authtoken) {
-            // Store user data in session storage
-            sessionStorage.setItem('auth-token', json.authtoken);
-            sessionStorage.setItem('name', name);
-            sessionStorage.setItem('phone', phone);
-            sessionStorage.setItem('email', email);
-
-            // Redirect user to home page
-            navigate('/');
-            window.location.reload(); // Refresh the page
-        } else {
-            if (json.errors) {
-                for (const error of json.errors) {
-                    setShowerr(error.msg); // Show error messages
-                }
-            } else {
-                setShowerr(json.error);
+            if (!response.ok) {
+                throw new Error('Failed to register. Server responded with an error.');
             }
+
+            const json = await response.json(); // Parse the response JSON
+
+            if (json.authtoken) {
+                // Store user data in session storage
+                sessionStorage.setItem('auth-token', json.authtoken);
+                sessionStorage.setItem('name', name);
+                sessionStorage.setItem('phone', phone);
+                sessionStorage.setItem('email', email);
+
+                // Redirect user to home page
+                navigate('/');
+                window.location.reload(); // Refresh the page
+            } else {
+                if (json.errors) {
+                    for (const error of json.errors) {
+                        setShowerr(error.msg); // Show error messages
+                    }
+                } else {
+                    setShowerr(json.error);
+                }
+            }
+        } catch (error) {
+            console.error('Error during registration:', error);
+            setShowerr('An error occurred while trying to register. Please try again later.');
         }
     };
 
@@ -179,4 +188,4 @@ const Sign_Up = () => {
     );
 };
 
-export default Sign_Up;
+export default SignUp;

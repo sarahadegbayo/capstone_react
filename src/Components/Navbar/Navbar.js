@@ -56,7 +56,7 @@ const Navbar = () => {
         </li>
         {/* List item for the 'Appointments' link */}
         <li className="link">
-          <Link to="/appointments">Appointments</Link>
+          <Link to="/appointmentsform">Appointments</Link>
         </li>
         {/* List item for the 'Sign Up' link with a button */}
         <li className="link">

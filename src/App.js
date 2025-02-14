@@ -28,7 +28,7 @@ function App() {
         <Routes>
           {/* Define individual Route components for different pages */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/sign_up" element={<SignUp />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/instant-consultation" element={<InstantConsultation />} />
           <Route path="/review-form" element={<ReviewForm />} />
