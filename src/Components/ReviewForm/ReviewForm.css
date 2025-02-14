@@ -1,0 +1,118 @@
+/* Base styles for the review form container */
+.review-form-container {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 400px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.review-form-container h3 {
+    margin-top: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+/* Styles for consultation details */
+.consultation-details p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Styles for the feedback button */
+.feedback-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.feedback-button:hover {
+    background-color: #0056b3;
+}
+
+/* Styles for the feedback form */
+.feedback-form {
+    margin-top: 20px;
+}
+
+.feedback-form .form-group {
+    margin-bottom: 15px;
+}
+
+.feedback-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.feedback-form input,
+.feedback-form textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.feedback-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Styles for the submit button */
+.submit-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.submit-button:hover {
+    background-color: #218838;
+}
+
+/* Rating Stars */
+.rating {
+    display: flex;
+    gap: 5px;
+}
+
+.star {
+    font-size: 24px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.star.filled {
+    color: #FFD700; /* Gold color for filled stars */
+}
+
+/* Submit Message */
+.submitted-message {
+    padding: 20px;
+    border: 2px solid #4CAF50;
+    background-color: #e8f5e9;
+    margin-top: 20px;
+}
+
+.submitted-message h3 {
+    color: #388E3C;
+}
+
+.submitted-message p {
+    font-size: 16px;
+}
