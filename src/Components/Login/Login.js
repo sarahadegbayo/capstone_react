@@ -35,7 +35,7 @@ const Login = () => {
           <h2>Login</h2>
         </div>
         <div className="login-text">
-          Are you a new member? <span><a href="../Sign_Up/Sign_Up.html" style={{ color: '#2190FF' }}> Sign Up Here</a></span>
+          Are you a new member? <span><a href="./SignUp/SignUp.js" style={{ color: '#2190FF' }}> Sign Up Here</a></span>
         </div>
         <br />
         <div className="login-form">

@@ -8,10 +8,11 @@ import Navbar from './Components/Navbar/Navbar';
 
 // Import your page components
 import LandingPage from './Components/Landing_Page/LandingPage';
-import Sign_Up from './Components/Sign_Up/Sign_Up.js'; // Ensure this path is correct
+import SignUp from './Components/SignUp/SignUp.js';
 import Login from './Components/Login/Login.js'; // Ensure this path is correct
-import InstantConsultation from 'InstantConsultationBooking/InstantConsultation.js'
+import InstantConsultation from './InstantConsultationBooking/InstantConsultation.js'
 import ReviewForm from './Components/ReviewForm/ReviewForm.js';
+import ReportsLayout from './Components/ReportsLayout/ReportsLayout.js';
 // import Appointments from './Components/Appointments/Appointments'; // Uncomment if needed
 
 // Function component for the main App
@@ -27,10 +28,11 @@ function App() {
         <Routes>
           {/* Define individual Route components for different pages */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/sign_up" element={<Sign_Up />} />
+          <Route path="/sign_up" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/instant-consultation" element={<InstantConsultation />} />
           <Route path="/review-form" element={<ReviewForm />} />
+          <Route path="/reports-layout" element={<ReportsLayout />} />
           {/* <Route path="/appointments" element={<Appointments />} /> */}
 
           {/* Handle undefined routes (404 Not Found) */}

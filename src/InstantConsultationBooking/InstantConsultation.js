@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import './InstantConsultation.css';
 import { useSearchParams } from 'react-router-dom';
 import FindDoctorSearchIC from './FindDoctorSearchIC/FindDoctorSearchIC';
@@ -12,7 +12,7 @@ const InstantConsultation = () => {
     const [error, setError] = useState(null);  // Added error state
 
     // Fetch doctors details
-    const getDoctorsDetails = useCallback(() => {
+    const getDoctorsDetails = () => {
         setIsLoading(true);
         fetch('https://api.npoint.io/9a5543d36f1460da2f63')
             .then(res => res.json())
@@ -25,11 +25,11 @@ const InstantConsultation = () => {
                 setError('Failed to load doctor data');
                 setIsLoading(false);
             });
-    }, []); // Empty dependency means it will only run once on mount
+    };
 
     // Filter doctors based on search text or URL params
     const filterDoctors = (doctorList) => {
-        const location = searchParams.get('location') || '';
+        const location = searchParams.get('location') || '';  // Using location
         const speciality = searchParams.get('speciality') || '';
 
         let filtered = doctorList;
@@ -38,6 +38,13 @@ const InstantConsultation = () => {
         if (speciality) {
             filtered = filtered.filter(doctor =>
                 doctor.speciality.toLowerCase() === speciality.toLowerCase()
+            );
+        }
+
+        // Apply location filter if present
+        if (location) {
+            filtered = filtered.filter(doctor =>
+                doctor.location.toLowerCase().includes(location.toLowerCase())
             );
         }
 
@@ -61,7 +68,7 @@ const InstantConsultation = () => {
     // Fetch doctors on component mount
     useEffect(() => {
         getDoctorsDetails();
-    }, [getDoctorsDetails]);
+    }, [getDoctorsDetails]);  // Empty dependency array to run only once
 
     return (
         <div className="searchpage-container">
