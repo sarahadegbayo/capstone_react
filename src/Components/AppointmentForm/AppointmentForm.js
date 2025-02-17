@@ -1,101 +1,87 @@
-import React, { useState } from "react";
-import "./AppointmentForm.css";
+import React, { useState } from 'react'
 
-const AppointmentForm = ({ doctorName, onClose }) => {
-    const [formData, setFormData] = useState({
-        patientName: "",
-        appointmentDate: "",
-        appointmentTime: "",
-    });
-    const [errors, setErrors] = useState({});
+const AppointmentForm = ({ doctorName, doctorSpeciality, onSubmit }) => {
+    const [name, setName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [date, setDate] = useState()
+    const [selectedSlot, setSelectedSlot] = useState(null);
 
-    // Handle input change
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+    const timeSlots = [
+        '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM',
+        '11:00 AM', '11:30 AM', '02:00 PM', '02:30 PM',
+        '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM'
+    ];
+
+    const handleSlotSelection = (slot) => {
+        setSelectedSlot(slot);
     };
 
-    // Handle form submission
-    const handleSubmit = (e) => {
+    const handleFormSubmit = (e) => {
         e.preventDefault();
-        const validationErrors = validateForm();
-        if (Object.keys(validationErrors).length === 0) {
-            alert("Appointment booked successfully!");
-            onClose(); // Close the form after submission
-        } else {
-            setErrors(validationErrors);
-        }
+        onSubmit({ name, phoneNumber });
+        setName('');
+        setPhoneNumber('');
     };
-
-    // Validate form inputs
-    const validateForm = () => {
-        const errors = {};
-        if (!formData.patientName.trim()) {
-            errors.patientName = "Patient name is required";
-        }
-        if (!formData.appointmentDate) {
-            errors.appointmentDate = "Appointment date is required";
-        }
-        if (!formData.appointmentTime) {
-            errors.appointmentTime = "Appointment time is required";
-        }
-        return errors;
-    };
-
+    const today = new Date().toISOString().split('T')[0];
     return (
-        <div className="appointment-form-overlay">
-            <div className="appointment-form">
-                <h2>Book Appointment with {doctorName}</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>Patient Name</label>
-                        <input
-                            type="text"
-                            name="patientName"
-                            value={formData.patientName}
-                            onChange={handleInputChange}
-                        />
-                        {errors.patientName && (
-                            <span className="error">{errors.patientName}</span>
-                        )}
-                    </div>
-                    <div className="form-group">
-                        <label>Appointment Date</label>
-                        <input
-                            type="date"
-                            name="appointmentDate"
-                            value={formData.appointmentDate}
-                            onChange={handleInputChange}
-                        />
-                        {errors.appointmentDate && (
-                            <span className="error">{errors.appointmentDate}</span>
-                        )}
-                    </div>
-                    <div className="form-group">
-                        <label>Appointment Time</label>
-                        <input
-                            type="time"
-                            name="appointmentTime"
-                            value={formData.appointmentTime}
-                            onChange={handleInputChange}
-                        />
-                        {errors.appointmentTime && (
-                            <span className="error">{errors.appointmentTime}</span>
-                        )}
-                    </div>
-                    <div className="form-buttons">
-                        <button type="submit">Book Appointment</button>
-                        <button type="button" onClick={onClose}>
-                            Cancel
-                        </button>
-                    </div>
-                </form>
+        <form onSubmit={handleFormSubmit} className="appointment-form">
+            <div className="form-group">
+                <label htmlFor="name">Name:</label>
+                <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                />
             </div>
-        </div>
+            <div className="form-group">
+                <label htmlFor="phoneNumber">Phone Number:</label>
+                <input
+                    type="tel"
+                    id="phoneNumber"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    required
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="date" >
+                    Date of Appointment
+                </label>
+                <input
+                    type="date"
+                    id="date"
+                    value={date}
+                    min={today}
+                    onChange={(e) => setDate(e.target.value)}
+
+                    required
+                />
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="slot">
+                    Select Time Slot
+                </label>
+                <select
+                    id="slot"
+                    value={selectedSlot}
+                    onChange={(e) => setSelectedSlot(e.target.value)}
+
+                    required
+                >
+                    <option value="">Select a time slot</option>
+                    {timeSlots.map((slot) => (
+                        <option key={slot} value={slot}>
+                            {slot}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <button type="submit">Book Now</button>
+        </form>
     );
 };
 
-export default AppointmentForm;
+export default AppointmentForm

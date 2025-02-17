@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import DoctorCardIC from "../../DoctorCardIC/DoctorCardIC";
-import FindDoctorSearchIC from "../../FindDoctorSearchIC/FindDoctorSearchIC";
+import DoctorCardIC from "../../InstantConsultationBooking/DoctorCardIC/DoctorCardIC";
+import FindDoctorSearchIC from "../../InstantConsultationBooking/FindDoctorSearchIC/FindDoctorSearchIC"
 import "./BookingConsultation.css";
 
 const BookingConsultation = () => {

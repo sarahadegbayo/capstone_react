@@ -1,117 +1,191 @@
-import React, { useState } from "react";
-import "./ReviewForm.css";
+import React, { useState, useEffect } from 'react';
+import { Star } from 'lucide-react';
+import './ReviewForm.css';
 
-const ReviewForm = ({ consultation }) => {
-    const [showForm, setShowForm] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
-    const [rating, setRating] = useState(0);
-    const [feedback, setFeedback] = useState("");
-    const [name, setName] = useState("");
+const ReviewForm = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedDoctor, setSelectedDoctor] = useState(null);
+    const [reviewedDoctors, setReviewedDoctors] = useState(new Set());
+    const [appointments, setAppointments] = useState([]);
+    const [formData, setFormData] = useState({
+        userName: '',
+        review: '',
+        rating: 0
+    });
+    const [hoveredRating, setHoveredRating] = useState(0);
 
-    // Handle form submission
+    // Load appointments from localStorage on component mount
+    useEffect(() => {
+        const savedAppointments = localStorage.getItem('appointments');
+        if (savedAppointments) {
+            setAppointments(JSON.parse(savedAppointments));
+        }
+    }, []);
+
+    const handleFeedback = (doctor) => {
+        setSelectedDoctor(doctor);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setFormData({ userName: '', review: '', rating: 0 });
+        setHoveredRating(0);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        const reviewData = {
+            doctor: selectedDoctor,
+            ...formData
+        };
+        console.log('Feedback submitted:', reviewData);
 
-        // Validate that all fields are filled out
-        if (name && feedback && rating) {
-            alert("Thank you for your feedback!");
-            setSubmitted(true); // Disable the form after submission
-            setShowForm(false); // Hide the form after submission
-            setRating(0); // Reset rating
-            setFeedback(""); // Reset feedback
-            setName(""); // Reset name
-        } else {
-            alert("Please fill out all fields before submitting.");
-        }
+        setReviewedDoctors(prev => new Set([...prev, selectedDoctor.serialNumber]));
+        handleCloseModal();
     };
 
-    // Handle rating selection (stars)
-    const handleRatingClick = (value) => {
-        if (!submitted) {
-            setRating(value);
-        }
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
     };
+
+    const handleRatingClick = (rating) => {
+        setFormData(prevData => ({
+            ...prevData,
+            rating
+        }));
+    };
+
+    const handleRatingHover = (rating) => {
+        setHoveredRating(rating);
+    };
+
+    // Transform appointments for display
+    const doctorsToReview = appointments.map((appointment, index) => ({
+        serialNumber: index + 1,
+        name: appointment.doctorName,
+        speciality: appointment.doctorSpeciality
+    }));
 
     return (
-        <div className="review-form-container">
-            <h3>Consultation Details</h3>
-            <div className="consultation-details">
-                <p>
-                    <strong>Doctor:</strong> {consultation.doctorName}
-                </p>
-                <p>
-                    <strong>Date:</strong> {consultation.date}
-                </p>
-                <p>
-                    <strong>Time:</strong> {consultation.time}
-                </p>
+        <div className="table-container">
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                <img src="/api/placeholder/150/150" alt="Logo" />
+                <div className="search-container">
+                    <input 
+                        type="text" 
+                        placeholder="Search doctors, clinics, hospitals, etc." 
+                        className="search-input"
+                    />
+                </div>
             </div>
 
-            {/* Button to show/hide the feedback form */}
-            <button
-                className="feedback-button"
-                onClick={() => setShowForm(!showForm)}
-                disabled={submitted} // Disable button after feedback is submitted
-            >
-                {showForm ? "Hide Feedback Form" : "Provide Feedback"}
-            </button>
-
-            {/* Feedback form */}
-            {showForm && !submitted && (
-                <form className="feedback-form" onSubmit={handleSubmit}>
-                    {/* Name input */}
-                    <div className="form-group">
-                        <label>Name</label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Enter your name"
-                            required
-                        />
-                    </div>
-
-                    {/* Rating input (stars) */}
-                    <div className="form-group">
-                        <label>Rating</label>
-                        <div className="rating">
-                            {[1, 2, 3, 4, 5].map((value) => (
-                                <span
-                                    key={value}
-                                    className={`star ${value <= rating ? "filled" : ""}`}
-                                    onClick={() => handleRatingClick(value)}
-                                >
-                                    ★
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Review textarea */}
-                    <div className="form-group">
-                        <label>Feedback</label>
-                        <textarea
-                            value={feedback}
-                            onChange={(e) => setFeedback(e.target.value)}
-                            placeholder="Share your experience..."
-                            required
-                        />
-                    </div>
-
-                    {/* Submit button */}
-                    <button type="submit" className="submit-button">
-                        Submit Feedback
-                    </button>
-                </form>
+            {doctorsToReview.length > 0 ? (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Serial Number</th>
+                            <th>Doctor Name</th>
+                            <th>Doctor Speciality</th>
+                            <th>Provide feedback</th>
+                            <th>Review Given</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {doctorsToReview.map((doctor) => (
+                            <tr key={doctor.serialNumber}>
+                                <td>{doctor.serialNumber}</td>
+                                <td>{doctor.name}</td>
+                                <td>{doctor.speciality}</td>
+                                <td>
+                                    <button
+                                        className="feedback-button"
+                                        onClick={() => handleFeedback(doctor)}
+                                        disabled={reviewedDoctors.has(doctor.serialNumber)}
+                                        style={{
+                                            backgroundColor: reviewedDoctors.has(doctor.serialNumber) ? '#cccccc' : '#007bff',
+                                            cursor: reviewedDoctors.has(doctor.serialNumber) ? 'not-allowed' : 'pointer'
+                                        }}
+                                    >
+                                        Click Here
+                                    </button>
+                                </td>
+                                <td style={{ textAlign: 'center' }}>
+                                    {reviewedDoctors.has(doctor.serialNumber) && "review received"}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            ) : (
+                <div style={{ textAlign: 'center', padding: '20px' }}>
+                    No appointments booked yet. Book an appointment to leave a review.
+                </div>
             )}
 
-            {/* Display the review after submission */}
-            {submitted && (
-                <div className="submitted-message">
-                    <h3>Your review has been submitted!</h3>
-                    <p><strong>Name:</strong> {name}</p>
-                    <p><strong>Rating:</strong> {rating} / 5</p>
-                    <p><strong>Feedback:</strong> {feedback}</p>
+            {isModalOpen && selectedDoctor && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                        <h2>Provide Feedback for {selectedDoctor.name}</h2>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label htmlFor="userName">Your Name:</label>
+                                <input
+                                    type="text"
+                                    id="userName"
+                                    name="userName"
+                                    value={formData.userName}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="review">Your Review:</label>
+                                <textarea
+                                    id="review"
+                                    name="review"
+                                    value={formData.review}
+                                    onChange={handleInputChange}
+                                    required
+                                    rows="4"
+                                ></textarea>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Rating:</label>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    {[1, 2, 3, 4, 5].map((rating) => (
+                                        <Star
+                                            key={rating}
+                                            size={24}
+                                            style={{ cursor: 'pointer' }}
+                                            fill={(hoveredRating || formData.rating) >= rating ? '#ffd700' : 'none'}
+                                            stroke={(hoveredRating || formData.rating) >= rating ? '#ffd700' : '#000'}
+                                            onClick={() => handleRatingClick(rating)}
+                                            onMouseEnter={() => handleRatingHover(rating)}
+                                            onMouseLeave={() => handleRatingHover(0)}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="modal-buttons">
+                                <button type="submit" className="submit-button">Submit</button>
+                                <button 
+                                    type="button" 
+                                    className="cancel-button"
+                                    onClick={handleCloseModal}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             )}
         </div>

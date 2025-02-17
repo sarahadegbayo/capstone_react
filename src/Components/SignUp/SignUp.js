@@ -5,14 +5,14 @@ import { API_URL } from '../../config';
 
 // Function component for Sign Up form
 const SignUp = () => {
-    // State variables using useState hook
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
-    const [showerr, setShowerr] = useState(''); // State to show general error messages
-    const [phoneError, setPhoneError] = useState(''); // State to show phone number validation errors
-    const navigate = useNavigate(); // Navigation hook from react-router
+    const [showerr, setShowerr] = useState('');
+    const [phoneError, setPhoneError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     // Function to validate phone number
     const validatePhone = (phone) => {
@@ -27,48 +27,37 @@ const SignUp = () => {
 
     // Function to handle form submission
     const register = async (e) => {
-        e.preventDefault(); // Prevent default form submission
-
-        // Validate phone number before making the API call
+        e.preventDefault();
         if (!validatePhone(phone)) {
             return;
         }
 
+        setLoading(true); // Start loading
         try {
-            // API Call to register user
             const response = await fetch(`${API_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    password: password,
-                    phone: phone,
-                }),
+                body: JSON.stringify({ name, email, password, phone }),
             });
 
             if (!response.ok) {
                 throw new Error('Failed to register. Server responded with an error.');
             }
 
-            const json = await response.json(); // Parse the response JSON
-
+            const json = await response.json();
             if (json.authtoken) {
-                // Store user data in session storage
                 sessionStorage.setItem('auth-token', json.authtoken);
                 sessionStorage.setItem('name', name);
                 sessionStorage.setItem('phone', phone);
                 sessionStorage.setItem('email', email);
-
-                // Redirect user to home page
                 navigate('/');
-                window.location.reload(); // Refresh the page
+                window.location.reload();
             } else {
                 if (json.errors) {
                     for (const error of json.errors) {
-                        setShowerr(error.msg); // Show error messages
+                        setShowerr(error.msg);
                     }
                 } else {
                     setShowerr(json.error);
@@ -77,10 +66,11 @@ const SignUp = () => {
         } catch (error) {
             console.error('Error during registration:', error);
             setShowerr('An error occurred while trying to register. Please try again later.');
+        } finally {
+            setLoading(false); // Stop loading
         }
     };
 
-    // JSX to render the Sign Up form
     return (
         <div className="container" style={{ marginTop: '5%' }}>
             <div className="signup-grid">
@@ -97,7 +87,6 @@ const SignUp = () => {
                 </div>
                 <div className="signup-form">
                     <form method="POST" onSubmit={register}>
-                        {/* Name Field */}
                         <div className="form-group">
                             <label htmlFor="name">Name</label>
                             <input
@@ -108,12 +97,10 @@ const SignUp = () => {
                                 id="name"
                                 className="form-control"
                                 placeholder="Enter your name"
-                                aria-describedby="helpId"
                                 required
                             />
                         </div>
 
-                        {/* Email Field */}
                         <div className="form-group">
                             <label htmlFor="email">Email</label>
                             <input
@@ -124,32 +111,28 @@ const SignUp = () => {
                                 id="email"
                                 className="form-control"
                                 placeholder="Enter your email"
-                                aria-describedby="helpId"
                                 required
                             />
                         </div>
 
-                        {/* Phone Field */}
                         <div className="form-group">
                             <label htmlFor="phone">Phone</label>
                             <input
                                 value={phone}
                                 onChange={(e) => {
                                     setPhone(e.target.value);
-                                    validatePhone(e.target.value); // Validate phone number on change
+                                    validatePhone(e.target.value);
                                 }}
                                 type="tel"
                                 name="phone"
                                 id="phone"
                                 className="form-control"
                                 placeholder="Enter your phone number"
-                                aria-describedby="helpId"
                                 required
                             />
                             {phoneError && <small className="text-danger">{phoneError}</small>}
                         </div>
 
-                        {/* Password Field */}
                         <div className="form-group">
                             <label htmlFor="password">Password</label>
                             <input
